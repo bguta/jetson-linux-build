@@ -4,16 +4,15 @@
 # MIT License
 
 cd ${SOURCE_TARGET}kernel/kernel-${KERNEL_RELEASE}
-# On the stock Jetsoninstall, there is no zImage in the boot directory
-# So we just copy the Image file over
-# If the zImage is needed, you must either
-# $ make zImage
-# or
-# $ make
-# Both of these commands must be executed in /usr/src/kernel/kernel-4.9
-# sudo cp arch/arm64/boot/zImage /boot/zImage
-# Note that if you are compiling on an external device, like a SSD, you should probably
-# copy this over to the internal eMMC if that is where the Jetson boots
-sudo cp arch/arm64/boot/Image /boot/Image
+
+KERNEL_VERSION=$(uname -r)
+# copy over modules and image to boot // make sure to backup as things may go wrong!
+sudo rm -rf /lib/modules/${KERNEL_VERSION}
+sudo cp -R ${TEGRA_MODULES_OUT}/lib/modules/${KERNEL_VERSION} /lib/modules
+sudo cp ${TEGRA_KERNEL_OUT}/arch/arm64/boot/Image /boot/Image
+
+
+# may need to add something like this at the end
+#sudo cp ${TEGRA_KERNEL_OUT}/arch/arm64/boot/dts/tegra194-p3668-all-p3509-0000.dtb /boot/test.dtb
 
 
